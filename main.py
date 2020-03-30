@@ -6,6 +6,7 @@ def main():
     shop = CycleRental(100)
     customer = Customer()
     customers = []
+    oldCustomer=[]
     while True:
         print("""
         ====== Bike Rental Shop =======
@@ -14,8 +15,9 @@ def main():
         3. Request a bike on daily basis $20
         4. Request a bike on weekly basis $60
         5. Return a bike`
-        6. Display Customer Number List
-        7. Exit
+        6. Display Customer List
+        7. Display Old Customer List
+        8. Exit
         """)
 
         choice = input("Enter choice: ")
@@ -34,7 +36,8 @@ def main():
             if res != -1:
                 customer.rentalTime = shop.rentCycleOnHourlyBasis(res, customer.customerName, customer.customerPhone)
                 customer.rentalBasis = 1
-                customers.append(customer.customerPhone)
+                detail = {"cycles": customer.cycles, "phone": customer.customerPhone, "rentalTime": customer.rentalTime, "rentalBasis": customer.rentalBasis, "name": customer.customerName}
+                customers.append(detail)
             else:
                 continue
         elif choice == 3:
@@ -42,28 +45,31 @@ def main():
             if res != -1:
                 customer.rentalTime = shop.rentCycleOnDailyBasis(res, customer.customerName, customer.customerPhone)
                 customer.rentalBasis = 2
-                customers.append(customer.customerPhone)
+                detail = {"cycles": customer.cycles, "phone": customer.customerPhone, "rentalTime": customer.rentalTime,
+                          "rentalBasis": customer.rentalBasis, "name": customer.customerName}
+                customers.append(detail)
             else:
                 continue
         elif choice == 4:
             res = customer.requestCycle(customers)
-            if res!=-1:
+            if res != -1:
                 customer.rentalTime = shop.rentCycleOnWeeklyBasis(res, customer.customerName, customer.customerPhone)
                 customer.rentalBasis = 3
-                customers.append(customer.customerPhone)
+                detail = {"cycles": customer.cycles, "phone": customer.customerPhone, "rentalTime": customer.rentalTime,
+                          "rentalBasis": customer.rentalBasis, "name": customer.customerName}
+                customers.append(detail)
             else:
                 continue
         elif choice == 5:
-            res = customer.returnCycle(customers)
+            res = shop.returnCycle(customers)
             if res != -1:
-                customer.bill = shop.returnCycle(res)
-                customers.remove(customer.customerPhone)
-                customer.rentalBasis, customer.rentalTime, customer.bikes = 0, 0, 0
-            else:
-                continue
+                customers = res['customers']
+                oldCustomer.append(res['billDetail'])
         elif choice == 6:
             print(customers)
         elif choice == 7:
+            print(oldCustomer)
+        elif choice == 8:
             break
         else:
             print("Invalid input. Please enter number between 1-6 ")

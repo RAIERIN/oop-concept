@@ -78,39 +78,54 @@ class CycleRental:
 
             return now
 
-    def returnCycle(self, request):
+    def returnCycle(self, customers):
         """
         1. Accept a rented cycle from a customer
         2. Replensihes the inventory
         3. Return a bill
         """
-        rentalTime, rentalBasis, numOfCycles = request
+
+        phone = input("Please Enter Phone Number:")
+        try:
+            phone = int(phone)
+        except ValueError:
+            print("Phone number should be integer!")
+            return -1
+
+        data = next((item for item in customers if item["phone"] == phone), False)
+
+        if data == False:
+            print("Customer with {} have not booked the cycle!".format(phone))
+            return -1
+        custs = list(filter(lambda i: i['phone'] != phone, customers))
         bill = 0
 
-        if rentalTime and rentalBasis and numOfCycles:
-            self.stock += numOfCycles
+        if data['rentalTime'] and data["rentalBasis"] and data['cycles']:
+            self.stock += data['cycles']
             now = datetime.datetime.now()
-            rentalPeriod = now - rentalTime
+            rentalPeriod = now - data['rentalTime']
 
             # hourly bill calculation
-            if rentalBasis == 1:
-                bill = round(rentalPeriod.seconds / 3600) * 5 * numOfCycles
+            if data["rentalBasis"] == 1:
+                bill = round(rentalPeriod.seconds / 3600) * 5 * data['cycles']
 
             # daily bill calculation
-            elif rentalBasis == 2:
-                bill = round(rentalPeriod.days) * 20 * numOfCycles
+            elif data["rentalBasis"] == 2:
+                bill = round(rentalPeriod.days) * 20 * data['cycles']
 
             # weekly bill calculation
-            elif rentalBasis == 3:
-                bill = round(rentalPeriod.days / 7) * 60 * numOfCycles
+            elif data["rentalBasis"] == 3:
+                bill = round(rentalPeriod.days / 7) * 60 * data['cycles']
 
-            if (3 <= numOfCycles <= 5):
+            if (3 <= data['cycles'] <= 5):
                 print("You are eligible for Family rental promotion of 30% discount")
                 bill = bill * 0.7
 
             print("Thanks for returning your bike. Hope you enjoyed our service!")
             print("That would be ${}".format(bill))
-            return bill
+            data['bill'] = bill
+            res = {"billDetail": data, "customers": custs}
+            return res
         else:
             print("Are you sure you rented a cycle with us?")
             return None

@@ -31,10 +31,10 @@ class Customer:
         except ValueError:
             print("Phone number should be integer!")
             return -1
-        if custphone in customers:
+        data = next((item for item in customers if item["phone"] == custphone), False)
+        if data:
             print("Customer with {} already booked the cycles! You cannot book the cycle!".format(custphone))
             return -1
-
         cycles = input("How many cycles would you like to rent?")
         try:
             cycles = int(cycles)
@@ -50,24 +50,24 @@ class Customer:
             self.customerPhone = custphone
         return self.cycles
 
-    def returnCycle(self, customers):
-        """
-        Allows customers to return their cycles to the rental shop.
-        """
-        cust = input("Please Enter Phone Number:")
-        try:
-            cust = int(cust)
-        except ValueError:
-            print("Phone number should be integer!")
-            return -1
-        if cust in customers:
-            self.customerPhone = cust
-        else:
-            print("Customer with {} have not booked the cycle!".format(cust))
-            return -1
-        print(self.rentalBasis,self.rentalTime,self.cycles)
-        if self.rentalBasis and self.rentalTime and self.cycles:
-            return self.rentalTime, self.rentalBasis, self.cycles
-        else:
-            return 0, 0, 0
+    # def returnCycle(self, customers):
+    #     """
+    #     Allows customers to return their cycles to the rental shop.
+    #     """
+    #     cust = input("Please Enter Phone Number:")
+    #     try:
+    #         cust = int(cust)
+    #     except ValueError:
+    #         print("Phone number should be integer!")
+    #         return -1
+    #     if cust in customers:
+    #         self.customerPhone = cust
+    #     else:
+    #         print("Customer with {} have not booked the cycle!".format(cust))
+    #         return -1
+    #     print(self.rentalBasis,self.rentalTime,self.cycles)
+    #     if self.rentalBasis and self.rentalTime and self.cycles:
+    #         return self.rentalTime, self.rentalBasis, self.cycles
+    #     else:
+    #         return 0, 0, 0
 
